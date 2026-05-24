@@ -137,7 +137,7 @@ export default function MonitorPage({
               download
               className="rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-medium text-ink-primary hover:bg-black/[0.02] transition-colors"
             >
-              Descargar Excel
+              Descargar Datos
             </a>
             <span className="text-xs text-ink-secondary/60">
               Actualización cada 5s

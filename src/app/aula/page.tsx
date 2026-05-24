@@ -11,13 +11,6 @@ const OPERATIONS = [
   { value: "div", label: "División" },
 ];
 
-const DURATIONS = [
-  { value: 45, label: "45 minutos" },
-  { value: 90, label: "1 hora 30 min" },
-  { value: 120, label: "2 horas" },
-  { value: 180, label: "3 horas" },
-  { value: 480, label: "8 horas" },
-];
 
 export default function AulaPage() {
   const [teacherName, setTeacherName] = useState("");
@@ -60,7 +53,7 @@ export default function AulaPage() {
     }
   }
 
-  const durationLabel = DURATIONS.find((d) => d.value === durationMinutes)?.label ?? `${durationMinutes} min`;
+  const durationLabel = `${durationMinutes} minutos`;
 
   return (
     <div className="min-h-screen bg-bg-warm">
@@ -131,20 +124,17 @@ export default function AulaPage() {
                   htmlFor="duration"
                   className="block text-sm font-medium text-ink-primary mb-1.5"
                 >
-                  Duración de la sesión
+                  Duración de la sesión (minutos)
                 </label>
-                <select
+                <input
                   id="duration"
+                  type="number"
+                  min={15}
+                  max={480}
                   value={durationMinutes}
                   onChange={(e) => setDurationMinutes(Number(e.target.value))}
                   className="w-full rounded-lg border border-black/10 bg-white px-4 py-2.5 text-ink-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition-colors"
-                >
-                  {DURATIONS.map((d) => (
-                    <option key={d.value} value={d.value}>
-                      {d.label}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
 
               {error && (
