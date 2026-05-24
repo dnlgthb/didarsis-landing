@@ -11,9 +11,18 @@ const OPERATIONS = [
   { value: "div", label: "División" },
 ];
 
+const DURATIONS = [
+  { value: 45, label: "45 minutos" },
+  { value: 90, label: "1 hora 30 min" },
+  { value: 120, label: "2 horas" },
+  { value: 180, label: "3 horas" },
+  { value: 480, label: "8 horas" },
+];
+
 export default function AulaPage() {
   const [teacherName, setTeacherName] = useState("");
   const [operationType, setOperationType] = useState("");
+  const [durationMinutes, setDurationMinutes] = useState(90);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
     code: string;
@@ -33,6 +42,7 @@ export default function AulaPage() {
         body: JSON.stringify({
           teacherName,
           operationType: operationType || null,
+          durationMinutes,
         }),
       });
 
@@ -49,6 +59,8 @@ export default function AulaPage() {
       setLoading(false);
     }
   }
+
+  const durationLabel = DURATIONS.find((d) => d.value === durationMinutes)?.label ?? `${durationMinutes} min`;
 
   return (
     <div className="min-h-screen bg-bg-warm">
@@ -114,6 +126,27 @@ export default function AulaPage() {
                 </select>
               </div>
 
+              <div>
+                <label
+                  htmlFor="duration"
+                  className="block text-sm font-medium text-ink-primary mb-1.5"
+                >
+                  Duración de la sesión
+                </label>
+                <select
+                  id="duration"
+                  value={durationMinutes}
+                  onChange={(e) => setDurationMinutes(Number(e.target.value))}
+                  className="w-full rounded-lg border border-black/10 bg-white px-4 py-2.5 text-ink-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition-colors"
+                >
+                  {DURATIONS.map((d) => (
+                    <option key={d.value} value={d.value}>
+                      {d.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               {error && (
                 <p className="text-sm text-brand-cta">{error}</p>
               )}
@@ -146,6 +179,9 @@ export default function AulaPage() {
                 <strong className="text-ink-primary">Numera+</strong> y hacer
                 clic en <strong className="text-ink-primary">&ldquo;Unirse a Clase&rdquo;</strong>.
               </p>
+              <p className="text-xs text-ink-secondary/60">
+                La sesión expira en {durationLabel}.
+              </p>
             </div>
 
             <a
@@ -154,11 +190,6 @@ export default function AulaPage() {
             >
               Abrir Panel de Monitoreo
             </a>
-
-            <p className="text-xs text-ink-secondary/60">
-              Guarda el link del panel para volver después. La sesión expira en 8
-              horas.
-            </p>
           </div>
         )}
       </main>

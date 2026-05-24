@@ -3,11 +3,13 @@ import { supabase, generateCode } from "@/lib/supabase";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { teacherName, operationType } = body;
+  const { teacherName, operationType, durationMinutes } = body;
 
   if (!teacherName || typeof teacherName !== "string" || teacherName.trim().length < 2) {
     return NextResponse.json({ error: "Nombre del profesor requerido" }, { status: 400 });
   }
+
+  const minutes = Math.min(Math.max(Number(durationMinutes) || 90, 15), 480);
 
   let code = generateCode();
   let attempts = 0;
@@ -25,12 +27,15 @@ export async function POST(request: Request) {
     attempts++;
   }
 
+  const expiresAt = new Date(Date.now() + minutes * 60 * 1000).toISOString();
+
   const { data, error } = await supabase
     .from("classroom_sessions")
     .insert({
       code,
       teacher_name: teacherName.trim(),
       operation_type: operationType || null,
+      expires_at: expiresAt,
     })
     .select("code, monitor_token")
     .single();

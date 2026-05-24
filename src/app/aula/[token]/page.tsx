@@ -131,9 +131,18 @@ export default function MonitorPage({
               {OP_LABELS[session.operationType] || session.operationType}
             </span>
           )}
-          <span className="ml-auto text-xs text-ink-secondary/60">
-            Actualización automática cada 5s
-          </span>
+          <div className="ml-auto flex items-center gap-3">
+            <a
+              href={`/api/aula/export/${token}`}
+              download
+              className="rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-medium text-ink-primary hover:bg-black/[0.02] transition-colors"
+            >
+              Descargar Excel
+            </a>
+            <span className="text-xs text-ink-secondary/60">
+              Actualización cada 5s
+            </span>
+          </div>
         </div>
 
         {/* Summary cards */}
