@@ -3,14 +3,14 @@ const apps = [
     name: "Numera",
     description: "Práctica de operaciones matemáticas con combate gamificado.",
     gradient: "linear-gradient(135deg, #7F00FF, #FF295C)",
-    href: "https://numera-plus.vercel.app/",
+    href: "/numera/",
   },
   {
     name: "Despeje",
     description:
       "Resolución paso a paso de ecuaciones, como se enseña en la escuela.",
     gradient: "linear-gradient(135deg, #BF15AE, #E9053A)",
-    href: "https://despeja-app.vercel.app/",
+    href: "/despeja/",
   },
   {
     name: "Más en camino",
@@ -121,8 +121,6 @@ export function Apps() {
                   <div className="mt-4">
                     <a
                       href={app.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className="inline-flex items-center justify-center rounded-lg bg-brand-cta px-4 py-2 text-sm text-white transition-opacity hover:opacity-90"
                       style={{ fontWeight: 500 }}
                     >
@@ -148,6 +146,26 @@ export function Apps() {
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-12 rounded-2xl border border-brand-primary/10 bg-brand-primary/5 p-8 text-center">
+          <h3
+            className="text-xl text-ink-primary"
+            style={{ fontWeight: 500 }}
+          >
+            Monitoreo en tiempo real
+          </h3>
+          <p className="mt-2 text-ink-secondary max-w-lg mx-auto">
+            Crea una sesión, comparte el código con tus estudiantes y sigue su
+            avance en vivo desde el panel de monitoreo.
+          </p>
+          <a
+            href="/aula"
+            className="mt-5 inline-flex items-center justify-center rounded-lg bg-brand-primary px-6 py-3 text-sm text-white transition-opacity hover:opacity-90"
+            style={{ fontWeight: 500 }}
+          >
+            Crear sesión de aula
+          </a>
         </div>
 
         <p className="mt-8 text-center text-sm text-ink-secondary">

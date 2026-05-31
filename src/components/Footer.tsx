@@ -40,9 +40,7 @@ export function Footer() {
             </li>
             <li>
               <a
-                href="https://numera-plus.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/numera/"
                 className="hover:text-white transition-colors"
               >
                 Numera
@@ -50,12 +48,18 @@ export function Footer() {
             </li>
             <li>
               <a
-                href="https://despeja-app.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/despeja/"
                 className="hover:text-white transition-colors"
               >
                 Despeje
+              </a>
+            </li>
+            <li>
+              <a
+                href="/aula"
+                className="hover:text-white transition-colors"
+              >
+                Aula Virtual
               </a>
             </li>
           </ul>
