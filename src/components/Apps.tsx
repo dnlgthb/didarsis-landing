@@ -20,6 +20,57 @@ const apps = [
   },
 ];
 
+function NumeraMockup() {
+  return (
+    <div className="h-full flex items-center justify-center p-4">
+      <div className="w-44 rounded-lg bg-white/95 backdrop-blur-sm shadow-lg p-3 text-center">
+        <div className="text-base text-gray-800" style={{ fontWeight: 600 }}>
+          12 × 8
+        </div>
+        <div className="mt-2 grid grid-cols-3 gap-1.5">
+          <span className="rounded bg-white/80 border border-gray-200 px-2 py-1 text-xs text-gray-500">
+            88
+          </span>
+          <span
+            className="rounded bg-[#7F00FF] px-2 py-1 text-xs text-white"
+            style={{ fontWeight: 500 }}
+          >
+            96
+          </span>
+          <span className="rounded bg-white/80 border border-gray-200 px-2 py-1 text-xs text-gray-500">
+            104
+          </span>
+        </div>
+        <div className="mt-2 text-[10px] text-gray-500">⚡ Racha: 5</div>
+      </div>
+    </div>
+  );
+}
+
+function DespejeMockup() {
+  return (
+    <div className="h-full flex items-center justify-center p-4">
+      <div className="w-44 rounded-lg bg-white/95 backdrop-blur-sm shadow-lg p-3">
+        <div className="space-y-1 font-mono text-xs">
+          <div className="text-gray-800">2x + 6 = 14</div>
+          <div className="text-gray-400 text-[10px] pl-3">↓ restar 6</div>
+          <div className="text-gray-800">2x = 8</div>
+          <div className="text-gray-400 text-[10px] pl-3">↓ dividir por 2</div>
+          <div className="text-green-600" style={{ fontWeight: 500 }}>
+            x = 4 ✓
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AppMockup({ name }: { name: string }) {
+  if (name === "Numera") return <NumeraMockup />;
+  if (name === "Despeje") return <DespejeMockup />;
+  return null;
+}
+
 export function Apps() {
   return (
     <section id="apps" className="bg-white px-6 py-20 md:py-28">
@@ -42,7 +93,7 @@ export function Apps() {
               className="rounded-2xl overflow-hidden border border-black/5 flex flex-col"
             >
               <div
-                className="h-32"
+                className="h-40"
                 style={
                   app.gradient
                     ? { background: app.gradient }
@@ -53,7 +104,9 @@ export function Apps() {
                         borderTopRightRadius: 0,
                       }
                 }
-              />
+              >
+                <AppMockup name={app.name} />
+              </div>
               <div className="p-6 flex flex-col flex-1">
                 <h3
                   className="text-xl text-ink-primary"
