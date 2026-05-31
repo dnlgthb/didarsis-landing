@@ -19,7 +19,7 @@ export function Logo({ variant = "full" }: { variant?: "full" | "mark" }) {
   }
 
   return (
-    <a href="#" className="inline-flex items-center gap-2">
+    <a href="/" className="inline-flex items-center gap-2">
       <div className="w-8 h-8">{symbol}</div>
       <span
         className="text-xl text-brand-primary"
