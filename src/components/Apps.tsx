@@ -121,6 +121,8 @@ export function Apps() {
                   <div className="mt-4">
                     <a
                       href={app.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="inline-flex items-center justify-center rounded-lg bg-brand-cta px-4 py-2 text-sm text-white transition-opacity hover:opacity-90"
                       style={{ fontWeight: 500 }}
                     >
