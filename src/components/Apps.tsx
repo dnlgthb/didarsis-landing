@@ -6,7 +6,7 @@ const apps = [
     href: "/numera/",
   },
   {
-    name: "Despeje",
+    name: "Despeja",
     description:
       "Resolución paso a paso de ecuaciones, como se enseña en la escuela.",
     gradient: "linear-gradient(135deg, #BF15AE, #E9053A)",
@@ -47,7 +47,7 @@ function NumeraMockup() {
   );
 }
 
-function DespejeMockup() {
+function DespejaMockup() {
   return (
     <div className="h-full flex items-center justify-center p-4">
       <div className="w-44 rounded-lg bg-white/95 backdrop-blur-sm shadow-lg p-3">
@@ -67,7 +67,7 @@ function DespejeMockup() {
 
 function AppMockup({ name }: { name: string }) {
   if (name === "Numera") return <NumeraMockup />;
-  if (name === "Despeje") return <DespejeMockup />;
+  if (name === "Despeja") return <DespejaMockup />;
   return null;
 }
 

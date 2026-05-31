@@ -51,7 +51,7 @@ export function Footer() {
                 href="/despeja/"
                 className="hover:text-white transition-colors"
               >
-                Despeje
+                Despeja
               </a>
             </li>
             <li>
