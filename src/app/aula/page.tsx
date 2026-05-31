@@ -3,18 +3,10 @@
 import { useState } from "react";
 import { Logo } from "@/components/Logo";
 
-const OPERATIONS = [
-  { value: "", label: "Todas las operaciones" },
-  { value: "suma", label: "Suma" },
-  { value: "resta", label: "Resta" },
-  { value: "multi", label: "Multiplicación" },
-  { value: "div", label: "División" },
-];
 
 
 export default function AulaPage() {
   const [teacherName, setTeacherName] = useState("");
-  const [operationType, setOperationType] = useState("");
   const [durationMinutes, setDurationMinutes] = useState(90);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
@@ -34,7 +26,7 @@ export default function AulaPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           teacherName,
-          operationType: operationType || null,
+          operationType: null,
           durationMinutes,
         }),
       });
@@ -96,27 +88,6 @@ export default function AulaPage() {
                   placeholder="Ej: Prof. García"
                   className="w-full rounded-lg border border-black/10 bg-white px-4 py-2.5 text-ink-primary placeholder:text-ink-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition-colors"
                 />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="operationType"
-                  className="block text-sm font-medium text-ink-primary mb-1.5"
-                >
-                  Operación (opcional)
-                </label>
-                <select
-                  id="operationType"
-                  value={operationType}
-                  onChange={(e) => setOperationType(e.target.value)}
-                  className="w-full rounded-lg border border-black/10 bg-white px-4 py-2.5 text-ink-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition-colors"
-                >
-                  {OPERATIONS.map((op) => (
-                    <option key={op.value} value={op.value}>
-                      {op.label}
-                    </option>
-                  ))}
-                </select>
               </div>
 
               <div>
