@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const apps = [
   {
     name: "Numera",
@@ -9,7 +11,7 @@ const apps = [
     name: "Despeja",
     description:
       "Resolución paso a paso de ecuaciones, como se enseña en la escuela.",
-    gradient: "linear-gradient(135deg, #BF15AE, #E9053A)",
+    gradient: "linear-gradient(135deg, #1F0040, #6E0B2A)",
     href: "/despeja/",
   },
   {
@@ -22,44 +24,87 @@ const apps = [
 
 function NumeraMockup() {
   return (
-    <div className="h-full flex items-center justify-center p-4">
-      <div className="w-44 rounded-lg bg-white/95 backdrop-blur-sm shadow-lg p-3 text-center">
-        <div className="text-base text-gray-800" style={{ fontWeight: 600 }}>
-          12 × 8
-        </div>
-        <div className="mt-2 grid grid-cols-3 gap-1.5">
-          <span className="rounded bg-white/80 border border-gray-200 px-2 py-1 text-xs text-gray-500">
-            88
-          </span>
-          <span
-            className="rounded bg-[#7F00FF] px-2 py-1 text-xs text-white"
-            style={{ fontWeight: 500 }}
-          >
-            96
-          </span>
-          <span className="rounded bg-white/80 border border-gray-200 px-2 py-1 text-xs text-gray-500">
-            104
-          </span>
-        </div>
-        <div className="mt-2 text-[10px] text-gray-500">⚡ Racha: 5</div>
+    <div className="relative h-full overflow-hidden">
+      <div className="absolute bottom-0 inset-x-0 flex items-end justify-center -space-x-5">
+        <Image
+          src="/apps/tiger-victory.png"
+          alt="Tigre karateca de Numera celebrando"
+          width={1024}
+          height={1024}
+          className="w-28 -mb-2 -rotate-3 drop-shadow-md"
+        />
+        <Image
+          src="/apps/mage-victory.png"
+          alt="Maga de Numera celebrando"
+          width={1024}
+          height={1536}
+          className="w-24 z-10 drop-shadow-md"
+        />
+        <Image
+          src="/apps/warrior-victory.png"
+          alt="Guerrero de Numera celebrando"
+          width={1024}
+          height={1536}
+          className="w-24 -mb-1 rotate-3 drop-shadow-md"
+        />
       </div>
+      <Image
+        src="/apps/numera-logo.png"
+        alt="Numera"
+        width={950}
+        height={528}
+        className="absolute top-2 left-1/2 -translate-x-1/2 w-44 z-20 drop-shadow-xl"
+      />
     </div>
   );
 }
 
 function DespejaMockup() {
   return (
-    <div className="h-full flex items-center justify-center p-4">
-      <div className="w-44 rounded-lg bg-white/95 backdrop-blur-sm shadow-lg p-3">
-        <div className="space-y-1 font-mono text-xs">
-          <div className="text-gray-800">2x + 6 = 14</div>
-          <div className="text-gray-400 text-[10px] pl-3">↓ restar 6</div>
-          <div className="text-gray-800">2x = 8</div>
-          <div className="text-gray-400 text-[10px] pl-3">↓ dividir por 2</div>
-          <div className="text-green-600" style={{ fontWeight: 500 }}>
-            x = 4 ✓
-          </div>
-        </div>
+    <div className="relative h-full flex flex-col items-center justify-center overflow-hidden">
+      {/* Símbolos flotantes de color */}
+      <span
+        aria-hidden
+        className="absolute top-3 left-5 font-mono text-2xl text-yellow-300/90 -rotate-12 drop-shadow"
+        style={{ fontWeight: 700 }}
+      >
+        x
+      </span>
+      <span
+        aria-hidden
+        className="absolute top-8 right-6 font-mono text-xl text-cyan-300/90 rotate-12 drop-shadow"
+        style={{ fontWeight: 700 }}
+      >
+        +
+      </span>
+      <span
+        aria-hidden
+        className="absolute bottom-6 left-8 font-mono text-xl text-green-300/90 rotate-6 drop-shadow"
+        style={{ fontWeight: 700 }}
+      >
+        =
+      </span>
+      <span
+        aria-hidden
+        className="absolute bottom-10 right-8 font-mono text-2xl text-orange-300/90 -rotate-6 drop-shadow"
+        style={{ fontWeight: 700 }}
+      >
+        ÷
+      </span>
+
+      <Image
+        src="/apps/despeja-logo.png"
+        alt="Despeja"
+        width={1127}
+        height={475}
+        className="w-64 drop-shadow-xl"
+      />
+      <div className="-mt-4 z-10 rounded-full bg-white/15 border border-white/25 px-5 py-2 font-mono text-sm text-white backdrop-blur-sm shadow-lg">
+        2x + 6 = 14 <span className="text-yellow-300">→</span>{" "}
+        <span className="text-yellow-300" style={{ fontWeight: 700 }}>
+          x = 4
+        </span>{" "}
+        <span className="text-green-300">✓</span>
       </div>
     </div>
   );
@@ -93,7 +138,7 @@ export function Apps() {
               className="rounded-2xl overflow-hidden border border-black/5 flex flex-col"
             >
               <div
-                className="h-40"
+                className="h-48"
                 style={
                   app.gradient
                     ? { background: app.gradient }
