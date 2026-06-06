@@ -56,6 +56,14 @@ export function Footer() {
             </li>
             <li>
               <a
+                href="/verba/"
+                className="hover:text-white transition-colors"
+              >
+                Verba
+              </a>
+            </li>
+            <li>
+              <a
                 href="/aula"
                 className="hover:text-white transition-colors"
               >

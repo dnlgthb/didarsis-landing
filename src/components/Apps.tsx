@@ -15,6 +15,13 @@ const apps = [
     href: "/despeja/",
   },
   {
+    name: "Verba",
+    description:
+      "Práctica de lenguaje y comunicación: ortografía, vocabulario y comprensión lectora con combate gamificado.",
+    gradient: "linear-gradient(135deg, #00C9A7, #007EA7)",
+    href: "/verba/",
+  },
+  {
     name: "Más en camino",
     description: "Nuevas apps de práctica en desarrollo.",
     gradient: null,
@@ -110,9 +117,61 @@ function DespejaMockup() {
   );
 }
 
+function VerbaMockup() {
+  return (
+    <div className="relative h-full overflow-hidden">
+      {/* Letras flotantes de color */}
+      <span
+        aria-hidden
+        className="absolute top-3 left-5 font-mono text-2xl text-yellow-300/90 -rotate-12 drop-shadow"
+        style={{ fontWeight: 700 }}
+      >
+        A
+      </span>
+      <span
+        aria-hidden
+        className="absolute top-8 right-6 font-mono text-xl text-white/80 rotate-12 drop-shadow"
+        style={{ fontWeight: 700 }}
+      >
+        ¿?
+      </span>
+      <div className="absolute bottom-0 inset-x-0 flex items-end justify-center -space-x-5">
+        <Image
+          src="/apps/tiger-victory.png"
+          alt="Tigre karateca de Verba celebrando"
+          width={1024}
+          height={1024}
+          className="w-28 -mb-2 -rotate-3 drop-shadow-md"
+        />
+        <Image
+          src="/apps/mage-victory.png"
+          alt="Maga de Verba celebrando"
+          width={1024}
+          height={1536}
+          className="w-24 z-10 drop-shadow-md"
+        />
+        <Image
+          src="/apps/warrior-victory.png"
+          alt="Guerrero de Verba celebrando"
+          width={1024}
+          height={1536}
+          className="w-24 -mb-1 rotate-3 drop-shadow-md"
+        />
+      </div>
+      <span
+        className="absolute top-3 left-1/2 -translate-x-1/2 z-20 text-3xl text-white drop-shadow-xl"
+        style={{ fontWeight: 700, letterSpacing: "-1px" }}
+      >
+        Verba+
+      </span>
+    </div>
+  );
+}
+
 function AppMockup({ name }: { name: string }) {
   if (name === "Numera") return <NumeraMockup />;
   if (name === "Despeja") return <DespejaMockup />;
+  if (name === "Verba") return <VerbaMockup />;
   return null;
 }
 
