@@ -2,11 +2,18 @@
 
 import { useState } from "react";
 import { Logo } from "@/components/Logo";
+import { APP_LABELS, isValidApp } from "@/lib/aulaApps";
 
-
+const APPS = [
+  { value: "", label: "Todas las apps" },
+  { value: "numera", label: "Numera+" },
+  { value: "despeja", label: "Despeja" },
+  { value: "verba", label: "Verba!" },
+];
 
 export default function AulaPage() {
   const [teacherName, setTeacherName] = useState("");
+  const [app, setApp] = useState("");
   const [durationMinutes, setDurationMinutes] = useState(90);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
@@ -27,6 +34,7 @@ export default function AulaPage() {
         body: JSON.stringify({
           teacherName,
           operationType: null,
+          app: app || null,
           durationMinutes,
         }),
       });
@@ -65,8 +73,8 @@ export default function AulaPage() {
               Crear sesión de clase
             </h1>
             <p className="text-ink-secondary mb-8">
-              Genera un código para que tus estudiantes se conecten a Numera+ y
-              puedas monitorear su progreso en tiempo real.
+              Genera un código para que tus estudiantes se conecten desde las
+              apps de Didarsis y puedas monitorear su progreso en tiempo real.
             </p>
 
             <form onSubmit={handleCreate} className="space-y-5">
@@ -88,6 +96,30 @@ export default function AulaPage() {
                   placeholder="Ej: Prof. García"
                   className="w-full rounded-lg border border-black/10 bg-white px-4 py-2.5 text-ink-primary placeholder:text-ink-secondary/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition-colors"
                 />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="app"
+                  className="block text-sm font-medium text-ink-primary mb-1.5"
+                >
+                  App (opcional)
+                </label>
+                <select
+                  id="app"
+                  value={app}
+                  onChange={(e) => setApp(e.target.value)}
+                  className="w-full rounded-lg border border-black/10 bg-white px-4 py-2.5 text-ink-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition-colors"
+                >
+                  {APPS.map((a) => (
+                    <option key={a.value} value={a.value}>
+                      {a.label}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1.5 text-xs text-ink-secondary/60">
+                  Si eliges una app, el código solo funcionará en esa app.
+                </p>
               </div>
 
               <div>
@@ -137,8 +169,11 @@ export default function AulaPage() {
             <div className="space-y-2">
               <p className="text-sm text-ink-secondary">
                 Los estudiantes deben abrir{" "}
-                <strong className="text-ink-primary">Numera+</strong> y hacer
-                clic en <strong className="text-ink-primary">&ldquo;Unirse a Clase&rdquo;</strong>.
+                <strong className="text-ink-primary">
+                  {isValidApp(app) ? APP_LABELS[app] : "la app correspondiente"}
+                </strong>{" "}
+                y hacer clic en{" "}
+                <strong className="text-ink-primary">&ldquo;Unirse a Clase&rdquo;</strong>.
               </p>
               <p className="text-xs text-ink-secondary/60">
                 La sesión expira en {durationLabel}.

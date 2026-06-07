@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { appFromOperation } from "@/lib/aulaApps";
 
 interface ProgressEvent {
   eventType: string;
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
 
   const { data: student } = await supabase
     .from("session_students")
-    .select("id")
+    .select("id, app")
     .eq("id", studentId)
     .single();
 
@@ -58,6 +59,11 @@ export async function POST(request: Request) {
     else if (e.eventType === "error") errorCount++;
   }
 
+  // Deducir la app desde el operationType (cubre builds que no la envían al unirse)
+  const derivedApp = appFromOperation(events[0]?.operationType);
+  const appUpdate =
+    derivedApp && student.app !== derivedApp ? { app: derivedApp } : {};
+
   if (correctCount > 0 || errorCount > 0) {
     const { data: current } = await supabase
       .from("session_students")
@@ -72,9 +78,15 @@ export async function POST(request: Request) {
           completed: current.completed + correctCount,
           errors: current.errors + errorCount,
           last_active_at: new Date().toISOString(),
+          ...appUpdate,
         })
         .eq("id", studentId);
     }
+  } else if (derivedApp && student.app !== derivedApp) {
+    await supabase
+      .from("session_students")
+      .update({ app: derivedApp })
+      .eq("id", studentId);
   }
 
   return NextResponse.json({ ok: true });

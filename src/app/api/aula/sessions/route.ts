@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { supabase, generateCode } from "@/lib/supabase";
+import { isValidApp } from "@/lib/aulaApps";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { teacherName, operationType, durationMinutes } = body;
+  const { teacherName, operationType, durationMinutes, app } = body;
 
   if (!teacherName || typeof teacherName !== "string" || teacherName.trim().length < 2) {
     return NextResponse.json({ error: "Nombre del profesor requerido" }, { status: 400 });
@@ -35,6 +36,7 @@ export async function POST(request: Request) {
       code,
       teacher_name: teacherName.trim(),
       operation_type: operationType || null,
+      app: isValidApp(app) ? app : null,
       expires_at: expiresAt,
     })
     .select("code, monitor_token")

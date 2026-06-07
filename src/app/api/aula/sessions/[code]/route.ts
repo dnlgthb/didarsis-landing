@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { APP_LABELS, isValidApp } from "@/lib/aulaApps";
 
 export async function GET(
   _request: Request,
@@ -9,7 +10,7 @@ export async function GET(
 
   const { data, error } = await supabase
     .from("classroom_sessions")
-    .select("id, code, teacher_name, operation_type, active, expires_at")
+    .select("id, code, teacher_name, operation_type, app, active, expires_at")
     .eq("code", code.toUpperCase())
     .eq("active", true)
     .single();
@@ -27,5 +28,7 @@ export async function GET(
     code: data.code,
     teacherName: data.teacher_name,
     operationType: data.operation_type,
+    app: data.app,
+    appLabel: isValidApp(data.app) ? APP_LABELS[data.app] : null,
   });
 }

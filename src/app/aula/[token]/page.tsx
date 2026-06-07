@@ -2,16 +2,25 @@
 
 import { useEffect, useState, useCallback, use } from "react";
 import { Logo } from "@/components/Logo";
+import { APP_LABELS, OP_LABELS, isValidApp } from "@/lib/aulaApps";
+
+interface Section {
+  op: string;
+  label: string;
+  count: number;
+}
 
 interface Student {
   id: string;
   student_name: string;
+  app: string | null;
   completed: number;
   errors: number;
   max_streak: number;
   coins: number;
   joined_at: string;
   last_active_at: string;
+  sections: Section[];
 }
 
 interface SessionData {
@@ -19,6 +28,7 @@ interface SessionData {
     code: string;
     teacherName: string;
     operationType: string | null;
+    app: string | null;
     active: boolean;
     createdAt: string;
     expiresAt: string;
@@ -34,13 +44,6 @@ function timeAgo(dateStr: string): string {
   const hours = Math.floor(minutes / 60);
   return `hace ${hours}h`;
 }
-
-const OP_LABELS: Record<string, string> = {
-  suma: "Suma",
-  resta: "Resta",
-  multi: "Multiplicación",
-  div: "División",
-};
 
 export default function MonitorPage({
   params,
@@ -126,6 +129,11 @@ export default function MonitorPage({
           <h1 className="text-xl font-medium text-ink-primary">
             Panel de Monitoreo
           </h1>
+          {isValidApp(session.app) && (
+            <span className="rounded-full bg-brand-primary/10 px-3 py-1 text-xs font-medium text-brand-primary">
+              {APP_LABELS[session.app]}
+            </span>
+          )}
           {session.operationType && (
             <span className="rounded-full bg-brand-primary/10 px-3 py-1 text-xs font-medium text-brand-primary">
               {OP_LABELS[session.operationType] || session.operationType}
@@ -178,7 +186,11 @@ export default function MonitorPage({
               Esperando estudiantes...
             </p>
             <p className="text-sm text-ink-secondary/60">
-              Los estudiantes deben abrir Numera+ e ingresar el código{" "}
+              Los estudiantes deben abrir{" "}
+              {isValidApp(session.app)
+                ? APP_LABELS[session.app]
+                : "la app correspondiente"}{" "}
+              e ingresar el código{" "}
               <strong className="text-brand-primary tracking-wider">
                 {session.code}
               </strong>
@@ -191,6 +203,9 @@ export default function MonitorPage({
                 <tr className="border-b border-black/5 text-left">
                   <th className="px-4 py-3 font-medium text-ink-secondary">
                     Estudiante
+                  </th>
+                  <th className="px-4 py-3 font-medium text-ink-secondary">
+                    App
                   </th>
                   <th className="px-4 py-3 font-medium text-ink-secondary text-center">
                     Resueltos
@@ -219,6 +234,10 @@ export default function MonitorPage({
                   const isActive =
                     Date.now() - new Date(student.last_active_at).getTime() <
                     120000;
+                  const wrongApp =
+                    isValidApp(session.app) &&
+                    student.app !== null &&
+                    student.app !== session.app;
 
                   return (
                     <tr
@@ -239,6 +258,27 @@ export default function MonitorPage({
                             </span>
                           )}
                         </div>
+                        {student.sections.length > 0 && (
+                          <p className="mt-1 pl-4 text-xs text-ink-secondary/60">
+                            {student.sections
+                              .slice(0, 4)
+                              .map((s) => `${s.label} ×${s.count}`)
+                              .join(" · ")}
+                          </p>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {wrongApp ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+                            ⚠ {isValidApp(student.app) ? APP_LABELS[student.app] : student.app}
+                          </span>
+                        ) : (
+                          <span className="text-ink-primary">
+                            {isValidApp(student.app)
+                              ? APP_LABELS[student.app]
+                              : "—"}
+                          </span>
+                        )}
                       </td>
                       <td className="px-4 py-3 text-center text-ink-primary">
                         {student.completed}
