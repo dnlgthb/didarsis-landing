@@ -15,7 +15,7 @@ const apps = [
     href: "/despeja/",
   },
   {
-    name: "VERBA",
+    name: "VERBA!",
     description:
       "Práctica de lenguaje y comunicación: ortografía, vocabulario y comprensión lectora con combate gamificado.",
     gradient: "linear-gradient(135deg, #C1440E, #6B1F2A)",
@@ -158,12 +158,13 @@ function VerbaMockup() {
           className="w-24 -mb-1 rotate-3 drop-shadow-md"
         />
       </div>
-      <span
-        className="absolute top-3 left-1/2 -translate-x-1/2 z-20 font-serif text-3xl text-amber-300 drop-shadow-xl whitespace-nowrap"
-        style={{ fontWeight: 700, letterSpacing: "4px" }}
-      >
-        ❦ VERBA ❦
-      </span>
+      <Image
+        src="/apps/verba-logo.png"
+        alt="VERBA!"
+        width={1254}
+        height={1254}
+        className="absolute top-2 left-1/2 -translate-x-1/2 w-28 z-20 drop-shadow-xl"
+      />
     </div>
   );
 }
@@ -171,7 +172,7 @@ function VerbaMockup() {
 function AppMockup({ name }: { name: string }) {
   if (name === "Numera") return <NumeraMockup />;
   if (name === "Despeja") return <DespejaMockup />;
-  if (name === "VERBA") return <VerbaMockup />;
+  if (name === "VERBA!") return <VerbaMockup />;
   return null;
 }
 
