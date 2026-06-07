@@ -15,10 +15,10 @@ const apps = [
     href: "/despeja/",
   },
   {
-    name: "Verba",
+    name: "VERBA",
     description:
       "Práctica de lenguaje y comunicación: ortografía, vocabulario y comprensión lectora con combate gamificado.",
-    gradient: "linear-gradient(135deg, #00C9A7, #007EA7)",
+    gradient: "linear-gradient(135deg, #C1440E, #6B1F2A)",
     href: "/verba/",
   },
   {
@@ -120,49 +120,49 @@ function DespejaMockup() {
 function VerbaMockup() {
   return (
     <div className="relative h-full overflow-hidden">
-      {/* Letras flotantes de color */}
+      {/* Letras flotantes estilo clásico */}
       <span
         aria-hidden
-        className="absolute top-3 left-5 font-mono text-2xl text-yellow-300/90 -rotate-12 drop-shadow"
+        className="absolute top-4 left-5 font-serif text-2xl text-amber-200/90 -rotate-12 drop-shadow"
         style={{ fontWeight: 700 }}
       >
         A
       </span>
       <span
         aria-hidden
-        className="absolute top-8 right-6 font-mono text-xl text-white/80 rotate-12 drop-shadow"
+        className="absolute top-9 right-6 font-serif text-xl text-amber-200/80 rotate-12 drop-shadow"
         style={{ fontWeight: 700 }}
       >
-        ¿?
+        « »
       </span>
       <div className="absolute bottom-0 inset-x-0 flex items-end justify-center -space-x-5">
         <Image
           src="/apps/tiger-victory.png"
-          alt="Tigre karateca de Verba celebrando"
+          alt="Tigre karateca de VERBA celebrando"
           width={1024}
           height={1024}
           className="w-28 -mb-2 -rotate-3 drop-shadow-md"
         />
         <Image
           src="/apps/mage-victory.png"
-          alt="Maga de Verba celebrando"
+          alt="Maga de VERBA celebrando"
           width={1024}
           height={1536}
           className="w-24 z-10 drop-shadow-md"
         />
         <Image
           src="/apps/warrior-victory.png"
-          alt="Guerrero de Verba celebrando"
+          alt="Guerrero de VERBA celebrando"
           width={1024}
           height={1536}
           className="w-24 -mb-1 rotate-3 drop-shadow-md"
         />
       </div>
       <span
-        className="absolute top-3 left-1/2 -translate-x-1/2 z-20 text-3xl text-white drop-shadow-xl"
-        style={{ fontWeight: 700, letterSpacing: "-1px" }}
+        className="absolute top-3 left-1/2 -translate-x-1/2 z-20 font-serif text-3xl text-amber-300 drop-shadow-xl whitespace-nowrap"
+        style={{ fontWeight: 700, letterSpacing: "4px" }}
       >
-        Verba+
+        ❦ VERBA ❦
       </span>
     </div>
   );
@@ -171,7 +171,7 @@ function VerbaMockup() {
 function AppMockup({ name }: { name: string }) {
   if (name === "Numera") return <NumeraMockup />;
   if (name === "Despeja") return <DespejaMockup />;
-  if (name === "Verba") return <VerbaMockup />;
+  if (name === "VERBA") return <VerbaMockup />;
   return null;
 }
 

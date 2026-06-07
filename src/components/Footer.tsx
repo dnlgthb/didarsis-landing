@@ -59,7 +59,7 @@ export function Footer() {
                 href="/verba/"
                 className="hover:text-white transition-colors"
               >
-                Verba
+                VERBA
               </a>
             </li>
             <li>
