@@ -43,7 +43,7 @@ export function Footer() {
                 href="/numera/"
                 className="hover:text-white transition-colors"
               >
-                Numera
+                Numera+
               </a>
             </li>
             <li>
@@ -59,7 +59,7 @@ export function Footer() {
                 href="/verba/"
                 className="hover:text-white transition-colors"
               >
-                VERBA!
+                Verba!
               </a>
             </li>
             <li>

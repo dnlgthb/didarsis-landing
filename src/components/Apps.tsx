@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const apps = [
   {
-    name: "Numera",
+    name: "Numera+",
     description: "Práctica de operaciones matemáticas con combate gamificado.",
     gradient: "linear-gradient(135deg, #7F00FF, #FF295C)",
     href: "/numera/",
@@ -15,7 +15,7 @@ const apps = [
     href: "/despeja/",
   },
   {
-    name: "VERBA!",
+    name: "Verba!",
     description:
       "Práctica de lenguaje y comunicación: ortografía, vocabulario y comprensión lectora con combate gamificado.",
     gradient: "linear-gradient(135deg, #C1440E, #6B1F2A)",
@@ -45,7 +45,7 @@ function NumeraMockup() {
           alt="Maga de Numera celebrando"
           width={1024}
           height={1536}
-          className="w-24 z-10 drop-shadow-md"
+          className="w-24 z-30 drop-shadow-md"
         />
         <Image
           src="/apps/warrior-victory.png"
@@ -145,10 +145,10 @@ function VerbaMockup() {
         />
         <Image
           src="/apps/mage-victory.png"
-          alt="Maga de VERBA celebrando"
+          alt="Maga de Verba celebrando"
           width={1024}
           height={1536}
-          className="w-24 z-10 drop-shadow-md"
+          className="w-24 z-30 drop-shadow-md"
         />
         <Image
           src="/apps/warrior-victory.png"
@@ -160,19 +160,19 @@ function VerbaMockup() {
       </div>
       <Image
         src="/apps/verba-logo.png"
-        alt="VERBA!"
+        alt="Verba!"
         width={1254}
         height={1254}
-        className="absolute top-2 left-1/2 -translate-x-1/2 w-28 z-20 drop-shadow-xl"
+        className="absolute top-1 left-1/2 -translate-x-1/2 w-36 z-20 drop-shadow-xl"
       />
     </div>
   );
 }
 
 function AppMockup({ name }: { name: string }) {
-  if (name === "Numera") return <NumeraMockup />;
+  if (name === "Numera+") return <NumeraMockup />;
   if (name === "Despeja") return <DespejaMockup />;
-  if (name === "VERBA!") return <VerbaMockup />;
+  if (name === "Verba!") return <VerbaMockup />;
   return null;
 }
 
