@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { FeedbackCard } from "./FeedbackCard";
 
 const apps = [
   {
@@ -20,12 +21,6 @@ const apps = [
       "Práctica de lenguaje y comunicación: ortografía, vocabulario y comprensión lectora con combate gamificado.",
     gradient: "linear-gradient(135deg, #C1440E, #6B1F2A)",
     href: "/verba/",
-  },
-  {
-    name: "Más en camino",
-    description: "Nuevas apps de práctica en desarrollo.",
-    gradient: null,
-    href: null,
   },
 ];
 
@@ -253,6 +248,7 @@ export function Apps() {
               </div>
             </div>
           ))}
+          <FeedbackCard />
         </div>
 
         <div className="mt-12 rounded-2xl border border-brand-primary/10 bg-brand-primary/5 p-8 text-center">
