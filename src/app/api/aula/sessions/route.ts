@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase, generateCode } from "@/lib/supabase";
 import { isValidApp } from "@/lib/aulaApps";
+import { isValidNameMode, parseRoster } from "@/lib/roster";
 
 export async function POST(request: Request) {
   const body = await request.json();
@@ -8,6 +9,16 @@ export async function POST(request: Request) {
 
   if (!teacherName || typeof teacherName !== "string" || teacherName.trim().length < 2) {
     return NextResponse.json({ error: "Nombre del profesor requerido" }, { status: 400 });
+  }
+
+  const nameMode = isValidNameMode(body.nameMode) ? body.nameMode : "free";
+  const roster = nameMode === "roster" ? parseRoster(body.roster) : [];
+
+  if (nameMode === "roster" && roster.length === 0) {
+    return NextResponse.json(
+      { error: "La lista de nombres está vacía" },
+      { status: 400 },
+    );
   }
 
   const minutes = Math.min(Math.max(Number(durationMinutes) || 90, 15), 480);
@@ -37,6 +48,8 @@ export async function POST(request: Request) {
       teacher_name: teacherName.trim(),
       operation_type: operationType || null,
       app: isValidApp(app) ? app : null,
+      name_mode: nameMode,
+      roster,
       expires_at: expiresAt,
     })
     .select("code, monitor_token")

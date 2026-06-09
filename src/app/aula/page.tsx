@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Logo } from "@/components/Logo";
 import { APP_LABELS, isValidApp } from "@/lib/aulaApps";
+import { parseRoster } from "@/lib/roster";
 
 const APPS = [
   { value: "", label: "Todas las apps" },
@@ -14,6 +15,8 @@ const APPS = [
 export default function AulaPage() {
   const [teacherName, setTeacherName] = useState("");
   const [app, setApp] = useState("");
+  const [nameMode, setNameMode] = useState<"free" | "roster">("free");
+  const [roster, setRoster] = useState("");
   const [durationMinutes, setDurationMinutes] = useState(90);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{
@@ -35,6 +38,8 @@ export default function AulaPage() {
           teacherName,
           operationType: null,
           app: app || null,
+          nameMode,
+          roster: nameMode === "roster" ? roster : "",
           durationMinutes,
         }),
       });
@@ -54,6 +59,8 @@ export default function AulaPage() {
   }
 
   const durationLabel = `${durationMinutes} minutos`;
+  const rosterCount = parseRoster(roster).length;
+  const rosterInvalid = nameMode === "roster" && rosterCount === 0;
 
   return (
     <div className="min-h-screen bg-bg-warm">
@@ -123,6 +130,58 @@ export default function AulaPage() {
               </div>
 
               <div>
+                <label className="block text-sm font-medium text-ink-primary mb-1.5">
+                  Nombres de estudiantes
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setNameMode("free")}
+                    className={`rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${
+                      nameMode === "free"
+                        ? "border-brand-primary bg-brand-primary/10 text-brand-primary"
+                        : "border-black/10 bg-white text-ink-secondary hover:bg-black/[0.02]"
+                    }`}
+                  >
+                    Libre
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setNameMode("roster")}
+                    className={`rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${
+                      nameMode === "roster"
+                        ? "border-brand-primary bg-brand-primary/10 text-brand-primary"
+                        : "border-black/10 bg-white text-ink-secondary hover:bg-black/[0.02]"
+                    }`}
+                  >
+                    Lista de la clase
+                  </button>
+                </div>
+
+                {nameMode === "free" ? (
+                  <p className="mt-1.5 text-xs text-ink-secondary/60">
+                    Cada estudiante escribe su nombre libremente.
+                  </p>
+                ) : (
+                  <div className="mt-3">
+                    <textarea
+                      value={roster}
+                      onChange={(e) => setRoster(e.target.value)}
+                      rows={6}
+                      placeholder={"Pega aquí la columna del Excel\no escribe un nombre por línea:\n\nAna Soto\nBenjamín Díaz\nCamila Rojas"}
+                      className="w-full rounded-lg border border-black/10 bg-white px-4 py-2.5 text-ink-primary placeholder:text-ink-secondary/40 focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition-colors resize-y"
+                    />
+                    <p className="mt-1.5 text-xs text-ink-secondary/60">
+                      Un nombre por línea. {rosterCount} nombre
+                      {rosterCount === 1 ? "" : "s"} en la lista. Los estudiantes
+                      elegirán su nombre de un desplegable y cada nombre se puede
+                      usar una sola vez.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div>
                 <label
                   htmlFor="duration"
                   className="block text-sm font-medium text-ink-primary mb-1.5"
@@ -146,7 +205,7 @@ export default function AulaPage() {
 
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || rosterInvalid}
                 className="w-full rounded-lg bg-brand-primary px-6 py-3 text-white font-medium hover:bg-brand-primary/90 transition-colors disabled:opacity-50"
               >
                 {loading ? "Creando..." : "Crear Sesión"}
