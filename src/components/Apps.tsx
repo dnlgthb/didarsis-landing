@@ -251,26 +251,6 @@ export function Apps() {
           <FeedbackCard />
         </div>
 
-        <div className="mt-12 rounded-2xl border border-brand-primary/10 bg-brand-primary/5 p-8 text-center">
-          <h3
-            className="text-xl text-ink-primary"
-            style={{ fontWeight: 500 }}
-          >
-            Monitoreo en tiempo real
-          </h3>
-          <p className="mt-2 text-ink-secondary max-w-lg mx-auto">
-            Crea una sesión, comparte el código con tus estudiantes y sigue su
-            avance en vivo desde el panel de monitoreo.
-          </p>
-          <a
-            href="/aula"
-            className="mt-5 inline-flex items-center justify-center rounded-lg bg-brand-primary px-6 py-3 text-sm text-white transition-opacity hover:opacity-90"
-            style={{ fontWeight: 500 }}
-          >
-            Crear sesión de aula
-          </a>
-        </div>
-
         <p className="mt-8 text-center text-sm text-ink-secondary">
           Gratuitas. Sin instalación. Sin registro de estudiantes.
         </p>

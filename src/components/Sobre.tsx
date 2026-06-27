@@ -16,10 +16,6 @@ export function Sobre() {
           <p>
             Construimos plataformas y herramientas para docentes y estudiantes.
           </p>
-          <p>
-            El nombre une didáctica y catarsis: enseñanza que también
-            transforma.
-          </p>
         </div>
       </div>
     </section>
