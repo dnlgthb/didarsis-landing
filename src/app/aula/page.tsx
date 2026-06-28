@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Logo } from "@/components/Logo";
-import { APP_LABELS, isValidApp } from "@/lib/aulaApps";
+import { APP_LABELS, isValidApp, OP_LABELS, NUMERA_OPERATIONS } from "@/lib/aulaApps";
 import { parseRoster } from "@/lib/roster";
 
 const APPS = [
@@ -15,6 +15,7 @@ const APPS = [
 export default function AulaPage() {
   const [teacherName, setTeacherName] = useState("");
   const [app, setApp] = useState("");
+  const [operationTypes, setOperationTypes] = useState<string[]>([]);
   const [nameMode, setNameMode] = useState<"free" | "roster">("free");
   const [roster, setRoster] = useState("");
   const [durationMinutes, setDurationMinutes] = useState(90);
@@ -36,7 +37,7 @@ export default function AulaPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           teacherName,
-          operationType: null,
+          operationTypes,
           app: app || null,
           nameMode,
           roster: nameMode === "roster" ? roster : "",
@@ -56,6 +57,12 @@ export default function AulaPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  function toggleOperation(op: string) {
+    setOperationTypes((prev) =>
+      prev.includes(op) ? prev.filter((o) => o !== op) : [...prev, op],
+    );
   }
 
   const durationLabel = `${durationMinutes} minutos`;
@@ -126,6 +133,37 @@ export default function AulaPage() {
                 </select>
                 <p className="mt-1.5 text-xs text-ink-secondary/60">
                   Si eliges una app, el código solo funcionará en esa app.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-ink-primary mb-1.5">
+                  Operación a practicar (Numera, opcional)
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {NUMERA_OPERATIONS.map((op) => {
+                    const selected = operationTypes.includes(op);
+                    return (
+                      <button
+                        key={op}
+                        type="button"
+                        onClick={() => toggleOperation(op)}
+                        aria-pressed={selected}
+                        className={`rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${
+                          selected
+                            ? "border-brand-primary bg-brand-primary/10 text-brand-primary"
+                            : "border-black/10 bg-white text-ink-secondary hover:bg-black/[0.02]"
+                        }`}
+                      >
+                        {OP_LABELS[op]}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="mt-1.5 text-xs text-ink-secondary/60">
+                  {operationTypes.length === 0
+                    ? "Sin selección: uso libre, cualquier operación suma puntos."
+                    : "En clase, solo las operaciones elegidas otorgan puntos en Numera."}
                 </p>
               </div>
 

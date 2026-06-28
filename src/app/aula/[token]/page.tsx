@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, use } from "react";
+import Link from "next/link";
 import { Logo } from "@/components/Logo";
 import { APP_LABELS, OP_LABELS, isValidApp } from "@/lib/aulaApps";
 
@@ -28,6 +29,7 @@ interface SessionData {
     code: string;
     teacherName: string;
     operationType: string | null;
+    operationTypes: string[];
     app: string | null;
     active: boolean;
     createdAt: string;
@@ -36,8 +38,8 @@ interface SessionData {
   students: Student[];
 }
 
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
+function timeAgo(dateStr: string, now: number): string {
+  const diff = now - new Date(dateStr).getTime();
   const minutes = Math.floor(diff / 60000);
   if (minutes < 1) return "ahora";
   if (minutes < 60) return `hace ${minutes}m`;
@@ -54,6 +56,9 @@ export default function MonitorPage({
   const [data, setData] = useState<SessionData | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  // Instante de referencia para los cálculos de "última actividad". Se captura
+  // en cada poll en vez de llamar Date.now() durante el render (impuro).
+  const [now, setNow] = useState(0);
 
   const fetchData = useCallback(async () => {
     try {
@@ -63,6 +68,7 @@ export default function MonitorPage({
       }
       const json = await res.json();
       setData(json);
+      setNow(Date.now());
       setError("");
     } catch {
       setError("No se pudo cargar la sesión");
@@ -72,7 +78,9 @@ export default function MonitorPage({
   }, [token]);
 
   useEffect(() => {
-    fetchData();
+    // El fetch inicial se difiere a un microtask para no llamar setState de
+    // forma síncrona dentro del cuerpo del efecto.
+    queueMicrotask(fetchData);
     const interval = setInterval(fetchData, 5000);
     return () => clearInterval(interval);
   }, [fetchData]);
@@ -92,15 +100,25 @@ export default function MonitorPage({
           <p className="text-ink-primary text-lg mb-2">
             {error || "Sesión no encontrada"}
           </p>
-          <a href="/aula" className="text-brand-primary text-sm hover:underline">
+          <Link href="/aula" className="text-brand-primary text-sm hover:underline">
             Crear nueva sesión
-          </a>
+          </Link>
         </div>
       </div>
     );
   }
 
   const { session, students } = data;
+  // Operaciones buscadas por el profesor (formato nuevo en lista; se acepta el
+  // string único antiguo por retrocompatibilidad). Vacío = uso libre.
+  const targetOps =
+    session.operationTypes?.length > 0
+      ? session.operationTypes
+      : session.operationType
+        ? [session.operationType]
+        : [];
+  const targetSet = new Set(targetOps);
+  const hasTarget = targetSet.size > 0;
   const totalCompleted = students.reduce((s, st) => s + st.completed, 0);
   const totalErrors = students.reduce((s, st) => s + st.errors, 0);
   const accuracy =
@@ -134,9 +152,17 @@ export default function MonitorPage({
               {APP_LABELS[session.app]}
             </span>
           )}
-          {session.operationType && (
-            <span className="rounded-full bg-brand-primary/10 px-3 py-1 text-xs font-medium text-brand-primary">
-              {OP_LABELS[session.operationType] || session.operationType}
+          {hasTarget && (
+            <span className="flex flex-wrap items-center gap-1.5">
+              <span className="text-xs text-ink-secondary">Operación buscada:</span>
+              {targetOps.map((op) => (
+                <span
+                  key={op}
+                  className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700"
+                >
+                  {OP_LABELS[op] || op}
+                </span>
+              ))}
             </span>
           )}
           <div className="ml-auto flex items-center gap-3">
@@ -232,20 +258,31 @@ export default function MonitorPage({
                       ? Math.round((student.completed / total) * 100)
                       : 0;
                   const isActive =
-                    Date.now() - new Date(student.last_active_at).getTime() <
-                    120000;
+                    now - new Date(student.last_active_at).getTime() < 120000;
                   const wrongApp =
                     isValidApp(session.app) &&
                     student.app !== null &&
                     student.app !== session.app;
+                  // On/off-task: eventos en operaciones distintas a la buscada.
+                  const offTaskCount = hasTarget
+                    ? student.sections
+                        .filter((s) => !targetSet.has(s.op))
+                        .reduce((sum, s) => sum + s.count, 0)
+                    : 0;
+                  const onTaskCount = hasTarget
+                    ? student.sections
+                        .filter((s) => targetSet.has(s.op))
+                        .reduce((sum, s) => sum + s.count, 0)
+                    : 0;
+                  const offTask = offTaskCount > 0;
 
                   return (
                     <tr
                       key={student.id}
-                      className="border-b border-black/5 last:border-0"
+                      className={`border-b border-black/5 last:border-0 ${offTask ? "bg-amber-50" : ""}`}
                     >
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <span
                             className={`h-2 w-2 rounded-full ${isActive ? "bg-green-400" : "bg-gray-300"}`}
                           />
@@ -257,14 +294,37 @@ export default function MonitorPage({
                               {studentAccuracy}%
                             </span>
                           )}
+                          {offTask && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+                              ⚠ fuera de tarea ×{offTaskCount}
+                            </span>
+                          )}
+                          {hasTarget && !offTask && onTaskCount > 0 && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-700">
+                              ✓ en tarea
+                            </span>
+                          )}
                         </div>
                         {student.sections.length > 0 && (
-                          <p className="mt-1 pl-4 text-xs text-ink-secondary/60">
-                            {student.sections
-                              .slice(0, 4)
-                              .map((s) => `${s.label} ×${s.count}`)
-                              .join(" · ")}
-                          </p>
+                          <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5 pl-4 text-xs">
+                            {student.sections.slice(0, 4).map((s) => {
+                              const onTarget = !hasTarget || targetSet.has(s.op);
+                              return (
+                                <span
+                                  key={s.op}
+                                  className={
+                                    !hasTarget
+                                      ? "text-ink-secondary/60"
+                                      : onTarget
+                                        ? "text-green-700"
+                                        : "text-amber-700"
+                                  }
+                                >
+                                  {s.label} ×{s.count}
+                                </span>
+                              );
+                            })}
+                          </div>
                         )}
                       </td>
                       <td className="px-4 py-3">
@@ -293,7 +353,7 @@ export default function MonitorPage({
                         {student.coins}
                       </td>
                       <td className="px-4 py-3 text-right text-xs text-ink-secondary">
-                        {timeAgo(student.last_active_at)}
+                        {timeAgo(student.last_active_at, now)}
                       </td>
                     </tr>
                   );

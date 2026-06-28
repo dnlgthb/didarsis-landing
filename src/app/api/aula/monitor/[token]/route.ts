@@ -10,7 +10,7 @@ export async function GET(
 
   const { data: session } = await supabase
     .from("classroom_sessions")
-    .select("id, code, teacher_name, operation_type, app, active, created_at, expires_at")
+    .select("id, code, teacher_name, operation_type, operation_types, app, active, created_at, expires_at")
     .eq("monitor_token", token)
     .single();
 
@@ -53,6 +53,7 @@ export async function GET(
       code: session.code,
       teacherName: session.teacher_name,
       operationType: session.operation_type,
+      operationTypes: Array.isArray(session.operation_types) ? session.operation_types : [],
       app: session.app,
       active: session.active,
       createdAt: session.created_at,

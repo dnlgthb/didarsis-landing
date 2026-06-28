@@ -17,7 +17,7 @@ export async function POST(
 
   const { data: session } = await supabase
     .from("classroom_sessions")
-    .select("id, active, expires_at, app, name_mode, roster")
+    .select("id, active, expires_at, app, name_mode, roster, operation_types")
     .eq("code", code.toUpperCase())
     .eq("active", true)
     .single();
@@ -81,5 +81,10 @@ export async function POST(
     return NextResponse.json({ error: "Error al unirse" }, { status: 500 });
   }
 
-  return NextResponse.json({ studentId: student.id });
+  return NextResponse.json({
+    studentId: student.id,
+    operationTypes: Array.isArray(session.operation_types)
+      ? session.operation_types
+      : [],
+  });
 }

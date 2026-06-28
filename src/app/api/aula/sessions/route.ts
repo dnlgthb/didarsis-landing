@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabase, generateCode } from "@/lib/supabase";
-import { isValidApp } from "@/lib/aulaApps";
+import { isValidApp, parseOperationTypes } from "@/lib/aulaApps";
 import { isValidNameMode, parseRoster } from "@/lib/roster";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { teacherName, operationType, durationMinutes, app } = body;
+  const { teacherName, operationTypes, durationMinutes, app } = body;
 
   if (!teacherName || typeof teacherName !== "string" || teacherName.trim().length < 2) {
     return NextResponse.json({ error: "Nombre del profesor requerido" }, { status: 400 });
@@ -41,12 +41,16 @@ export async function POST(request: Request) {
 
   const expiresAt = new Date(Date.now() + minutes * 60 * 1000).toISOString();
 
+  const operations = parseOperationTypes(operationTypes);
+
   const { data, error } = await supabase
     .from("classroom_sessions")
     .insert({
       code,
       teacher_name: teacherName.trim(),
-      operation_type: operationType || null,
+      // `operation_type` (string único) se mantiene por retrocompatibilidad.
+      operation_type: operations[0] || null,
+      operation_types: operations,
       app: isValidApp(app) ? app : null,
       name_mode: nameMode,
       roster,
