@@ -32,6 +32,15 @@ export const OP_LABELS: Record<string, string> = {
   comprension: "Comprensión",
 };
 
+// Símbolo compacto de las operaciones de Numera para el panel del profesor.
+// Las habilidades sin símbolo (Verba, Despeja) caen de vuelta a su etiqueta.
+export const OP_SYMBOLS: Record<string, string> = {
+  suma: "+",
+  resta: "−",
+  multi: "×",
+  div: "÷",
+};
+
 // Operaciones/habilidades que el profesor puede fijar como objetivo, por app.
 // Solo las apps con más de una modalidad ofrecen selección; Despeja tiene una
 // sola (ecuaciones), por eso va vacía y no se muestra selector.

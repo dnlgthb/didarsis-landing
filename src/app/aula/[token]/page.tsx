@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, use } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
-import { APP_LABELS, OP_LABELS, isValidApp } from "@/lib/aulaApps";
+import { APP_LABELS, OP_LABELS, OP_SYMBOLS, isValidApp } from "@/lib/aulaApps";
 
 interface Section {
   op: string;
@@ -160,7 +160,7 @@ export default function MonitorPage({
                   key={op}
                   className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700"
                 >
-                  {OP_LABELS[op] || op}
+                  {OP_SYMBOLS[op] ?? OP_LABELS[op] ?? op}
                 </span>
               ))}
             </span>
@@ -320,7 +320,7 @@ export default function MonitorPage({
                                         : "text-amber-700"
                                   }
                                 >
-                                  {s.label} ×{s.count}
+                                  {OP_SYMBOLS[s.op] ?? s.label} ({s.count})
                                 </span>
                               );
                             })}
