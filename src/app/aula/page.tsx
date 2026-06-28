@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Logo } from "@/components/Logo";
-import { APP_LABELS, isValidApp, OP_LABELS, NUMERA_OPERATIONS } from "@/lib/aulaApps";
+import { APP_LABELS, isValidApp, OP_LABELS, APP_OPERATIONS } from "@/lib/aulaApps";
 import { parseRoster } from "@/lib/roster";
 
 const APPS = [
@@ -65,6 +65,15 @@ export default function AulaPage() {
     );
   }
 
+  function handleAppChange(value: string) {
+    setApp(value);
+    // Las operaciones dependen del app; al cambiarlo, limpiar selección previa.
+    setOperationTypes([]);
+  }
+
+  // Operaciones seleccionables del app elegido (vacío para Despeja o "Todas").
+  const appOps = isValidApp(app) ? APP_OPERATIONS[app] : [];
+
   const durationLabel = `${durationMinutes} minutos`;
   const rosterCount = parseRoster(roster).length;
   const rosterInvalid = nameMode === "roster" && rosterCount === 0;
@@ -122,7 +131,7 @@ export default function AulaPage() {
                 <select
                   id="app"
                   value={app}
-                  onChange={(e) => setApp(e.target.value)}
+                  onChange={(e) => handleAppChange(e.target.value)}
                   className="w-full rounded-lg border border-black/10 bg-white px-4 py-2.5 text-ink-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30 focus:border-brand-primary transition-colors"
                 >
                   {APPS.map((a) => (
@@ -136,36 +145,38 @@ export default function AulaPage() {
                 </p>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-ink-primary mb-1.5">
-                  Operación a practicar (Numera, opcional)
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {NUMERA_OPERATIONS.map((op) => {
-                    const selected = operationTypes.includes(op);
-                    return (
-                      <button
-                        key={op}
-                        type="button"
-                        onClick={() => toggleOperation(op)}
-                        aria-pressed={selected}
-                        className={`rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${
-                          selected
-                            ? "border-brand-primary bg-brand-primary/10 text-brand-primary"
-                            : "border-black/10 bg-white text-ink-secondary hover:bg-black/[0.02]"
-                        }`}
-                      >
-                        {OP_LABELS[op]}
-                      </button>
-                    );
-                  })}
+              {appOps.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-ink-primary mb-1.5">
+                    Operación a practicar (opcional)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {appOps.map((op) => {
+                      const selected = operationTypes.includes(op);
+                      return (
+                        <button
+                          key={op}
+                          type="button"
+                          onClick={() => toggleOperation(op)}
+                          aria-pressed={selected}
+                          className={`rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors ${
+                            selected
+                              ? "border-brand-primary bg-brand-primary/10 text-brand-primary"
+                              : "border-black/10 bg-white text-ink-secondary hover:bg-black/[0.02]"
+                          }`}
+                        >
+                          {OP_LABELS[op] || op}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="mt-1.5 text-xs text-ink-secondary/60">
+                    {operationTypes.length === 0
+                      ? "Sin selección: uso libre, cualquier operación suma puntos."
+                      : "En clase, solo las operaciones elegidas otorgan puntos."}
+                  </p>
                 </div>
-                <p className="mt-1.5 text-xs text-ink-secondary/60">
-                  {operationTypes.length === 0
-                    ? "Sin selección: uso libre, cualquier operación suma puntos."
-                    : "En clase, solo las operaciones elegidas otorgan puntos en Numera."}
-                </p>
-              </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-ink-primary mb-1.5">

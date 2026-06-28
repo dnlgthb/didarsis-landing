@@ -32,18 +32,23 @@ export const OP_LABELS: Record<string, string> = {
   comprension: "Comprensión",
 };
 
-// Operaciones que el profesor puede fijar como objetivo en Numera.
-export const NUMERA_OPERATIONS = ["suma", "resta", "multi", "div"] as const;
+// Operaciones/habilidades que el profesor puede fijar como objetivo, por app.
+// Solo las apps con más de una modalidad ofrecen selección; Despeja tiene una
+// sola (ecuaciones), por eso va vacía y no se muestra selector.
+export const APP_OPERATIONS: Record<AulaApp, string[]> = {
+  numera: ["suma", "resta", "multi", "div"],
+  verba: ["ortografia", "vocabulario", "cohesion", "comprension"],
+  despeja: [],
+};
+
+const ALL_OPERATIONS = new Set(Object.values(APP_OPERATIONS).flat());
 
 export function isValidApp(x: unknown): x is AulaApp {
   return x === "numera" || x === "despeja" || x === "verba";
 }
 
 export function isValidOperation(x: unknown): x is string {
-  return (
-    typeof x === "string" &&
-    (NUMERA_OPERATIONS as readonly string[]).includes(x)
-  );
+  return typeof x === "string" && ALL_OPERATIONS.has(x);
 }
 
 // Normaliza la entrada del cliente a un array de operaciones válidas y únicas.
