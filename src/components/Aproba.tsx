@@ -32,22 +32,25 @@ const results = [
 
 function Workflow() {
   return (
-    <div className="mb-8 flex items-start justify-center gap-1.5">
+    <div className="mb-8 flex items-start justify-between gap-0.5">
       {workflow.map(({ icon: Icon, label }, i) => (
-        <div key={label} className="flex items-start">
-          <div className="flex w-[72px] flex-col items-center gap-2 text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 border border-white/15 shadow-lg">
+        <div key={label} className="flex flex-1 items-start justify-center min-w-0">
+          <div className="flex w-full max-w-[72px] flex-col items-center gap-2 text-center">
+            <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-2xl bg-white/10 border border-white/15 shadow-lg">
               <Icon size={20} className="text-[#D98BFF]" />
             </div>
             <span
-              className="text-[11px] leading-tight text-white/85"
+              className="text-[10px] sm:text-[11px] leading-tight text-white/85"
               style={{ fontWeight: 500 }}
             >
               {label}
             </span>
           </div>
           {i < workflow.length - 1 && (
-            <ChevronRight size={16} className="mt-4 shrink-0 text-[#D98BFF]/50" />
+            <ChevronRight
+              size={16}
+              className="mt-3 sm:mt-4 shrink-0 text-[#D98BFF]/50"
+            />
           )}
         </div>
       ))}
