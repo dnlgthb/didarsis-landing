@@ -7,12 +7,12 @@ export const APP_LABELS: Record<AulaApp, string> = {
 };
 
 // URL base de cada app para generar deep-links de ingreso (QR del aula).
-// Se apunta directo a la ruta interna de cada app para evitar redirects que
-// descartan el query string (p.ej. Numera redirige "/" → "/numera/" sin query).
+// Apunta al dominio didarsis.com (más confiable al escanear); cada página
+// embebe la app en un iframe y reenvía el ?code= adentro (ver AppFrame).
 export const APP_JOIN_URLS: Record<AulaApp, string> = {
-  numera: "https://numera-plus.vercel.app/numera/",
-  despeja: "https://despeja-app.vercel.app/",
-  verba: "https://verba-app-delta.vercel.app/verba/",
+  numera: "https://didarsis.com/numera",
+  despeja: "https://didarsis.com/despeja",
+  verba: "https://didarsis.com/verba",
 };
 
 // Deep-link que abre la app con el código ya cargado, listo para elegir nombre.
