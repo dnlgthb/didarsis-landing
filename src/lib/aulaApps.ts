@@ -6,6 +6,20 @@ export const APP_LABELS: Record<AulaApp, string> = {
   verba: "Verba!",
 };
 
+// URL base de cada app para generar deep-links de ingreso (QR del aula).
+// Se apunta directo a la ruta interna de cada app para evitar redirects que
+// descartan el query string (p.ej. Numera redirige "/" → "/numera/" sin query).
+export const APP_JOIN_URLS: Record<AulaApp, string> = {
+  numera: "https://numera-plus.vercel.app/numera/",
+  despeja: "https://despeja-app.vercel.app/",
+  verba: "https://verba-app-delta.vercel.app/verba/",
+};
+
+// Deep-link que abre la app con el código ya cargado, listo para elegir nombre.
+export function joinUrl(app: AulaApp, code: string): string {
+  return `${APP_JOIN_URLS[app]}?code=${encodeURIComponent(code)}`;
+}
+
 // Cada app envía valores de operationType únicos en sus eventos,
 // lo que permite deducir la app en el servidor sin que se identifique.
 export const OP_TO_APP: Record<string, AulaApp> = {

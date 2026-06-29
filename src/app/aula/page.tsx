@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 import { Logo } from "@/components/Logo";
-import { APP_LABELS, isValidApp, OP_LABELS, APP_OPERATIONS } from "@/lib/aulaApps";
+import { APP_LABELS, isValidApp, OP_LABELS, APP_OPERATIONS, joinUrl } from "@/lib/aulaApps";
 import { parseRoster } from "@/lib/roster";
 
 const APPS = [
@@ -273,6 +274,24 @@ export default function AulaPage() {
                 </p>
               </div>
             </div>
+
+            {isValidApp(app) && (
+              <div className="space-y-3">
+                <p className="text-sm text-ink-secondary">
+                  O escanea este código para entrar directo a{" "}
+                  <strong className="text-ink-primary">{APP_LABELS[app]}</strong>{" "}
+                  con el código ya cargado:
+                </p>
+                <div className="inline-block rounded-2xl bg-white p-5 shadow-lg border border-black/5">
+                  <QRCodeSVG
+                    value={joinUrl(app, result.code)}
+                    size={200}
+                    level="M"
+                    marginSize={2}
+                  />
+                </div>
+              </div>
+            )}
 
             <div className="space-y-2">
               <p className="text-sm text-ink-secondary">
