@@ -62,3 +62,58 @@ export async function GET(
     students: studentsWithSections,
   });
 }
+
+// Libera (quita) a un estudiante de la sesión. Útil cuando alguien entró mal
+// (p.ej. eligió un nombre equivocado en modo lista): al borrarlo, su nombre
+// vuelve a quedar disponible para elegir. Autorizado por el monitor_token.
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ token: string }> },
+) {
+  const { token } = await params;
+  const body = await request.json().catch(() => ({}));
+  const studentId = body?.studentId;
+  if (typeof studentId !== "string" || !studentId) {
+    return NextResponse.json({ error: "studentId requerido" }, { status: 400 });
+  }
+
+  const { data: session } = await supabase
+    .from("classroom_sessions")
+    .select("id")
+    .eq("monitor_token", token)
+    .single();
+
+  if (!session) {
+    return NextResponse.json({ error: "Sesión no encontrada" }, { status: 404 });
+  }
+
+  // Verificar que el estudiante pertenece a ESTA sesión antes de borrar nada.
+  const { data: student } = await supabase
+    .from("session_students")
+    .select("id")
+    .eq("id", studentId)
+    .eq("session_id", session.id)
+    .single();
+
+  if (!student) {
+    return NextResponse.json({ error: "Estudiante no encontrado" }, { status: 404 });
+  }
+
+  // Borrar primero sus eventos (evita conflictos de llave foránea), luego el
+  // estudiante. Así su nombre de la lista vuelve a quedar libre.
+  await supabase.from("progress_events").delete().eq("student_id", studentId);
+  const { error } = await supabase
+    .from("session_students")
+    .delete()
+    .eq("id", studentId)
+    .eq("session_id", session.id);
+
+  if (error) {
+    return NextResponse.json(
+      { error: "No se pudo liberar al estudiante" },
+      { status: 500 },
+    );
+  }
+
+  return NextResponse.json({ ok: true });
+}

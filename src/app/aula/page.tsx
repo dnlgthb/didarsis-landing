@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Logo } from "@/components/Logo";
 import { APP_LABELS, isValidApp, OP_LABELS, APP_OPERATIONS, joinUrl } from "@/lib/aulaApps";
@@ -12,6 +12,10 @@ const APPS = [
   { value: "despeja", label: "Despeja" },
   { value: "verba", label: "Verba!" },
 ];
+
+// Clave de localStorage con la última sesión creada por el profesor, para
+// ofrecerle volver a ella si sigue activa.
+const LAST_SESSION_KEY = "didarsis-aula-last-session";
 
 export default function AulaPage() {
   const [teacherName, setTeacherName] = useState("");
@@ -26,6 +30,40 @@ export default function AulaPage() {
     monitorToken: string;
   } | null>(null);
   const [error, setError] = useState("");
+  // Sesión previa del profesor (guardada al crearla). Si sigue activa, le
+  // ofrecemos volver a ella en vez de obligarlo a crear una nueva.
+  const [savedSession, setSavedSession] = useState<{
+    code: string;
+    monitorToken: string;
+  } | null>(null);
+
+  // Al cargar la página, recuperar la última sesión creada y verificar que
+  // siga activa (no expirada). Si no, limpiar el registro local.
+  useEffect(() => {
+    let cancelled = false;
+    let saved: { code: string; monitorToken: string } | null = null;
+    try {
+      const raw = localStorage.getItem(LAST_SESSION_KEY);
+      if (raw) saved = JSON.parse(raw);
+    } catch {
+      saved = null;
+    }
+    if (!saved?.code || !saved?.monitorToken) return;
+
+    fetch(`/api/aula/sessions/${saved.code}`)
+      .then((res) => {
+        if (cancelled) return;
+        if (res.ok) {
+          setSavedSession(saved);
+        } else {
+          localStorage.removeItem(LAST_SESSION_KEY);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
@@ -53,6 +91,16 @@ export default function AulaPage() {
 
       const data = await res.json();
       setResult(data);
+      // Recordar la sesión para ofrecer "volver a ella" en visitas futuras.
+      try {
+        localStorage.setItem(
+          LAST_SESSION_KEY,
+          JSON.stringify({ code: data.code, monitorToken: data.monitorToken }),
+        );
+      } catch {
+        // Sin localStorage (modo privado, etc.): no es crítico.
+      }
+      setSavedSession(null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error inesperado");
     } finally {
@@ -93,6 +141,36 @@ export default function AulaPage() {
       <main className="mx-auto max-w-xl px-6 py-12">
         {!result ? (
           <>
+            {savedSession && (
+              <div className="mb-6 rounded-xl border border-brand-primary/20 bg-brand-primary/5 p-4">
+                <p className="text-sm text-ink-primary mb-1 font-medium">
+                  Tienes una sesión activa
+                </p>
+                <p className="text-sm text-ink-secondary mb-3">
+                  Código{" "}
+                  <strong className="text-brand-primary tracking-wider">
+                    {savedSession.code}
+                  </strong>
+                  . ¿Quieres volver a ella o crear una nueva?
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href={`/aula/${savedSession.monitorToken}`}
+                    className="rounded-lg bg-brand-primary px-4 py-2 text-sm font-medium text-white hover:bg-brand-primary/90 transition-colors"
+                  >
+                    Volver a la sesión
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => setSavedSession(null)}
+                    className="rounded-lg border border-black/10 bg-white px-4 py-2 text-sm font-medium text-ink-secondary hover:bg-black/[0.02] transition-colors"
+                  >
+                    Crear nueva
+                  </button>
+                </div>
+              </div>
+            )}
+
             <h1 className="text-2xl font-medium text-ink-primary mb-2">
               Crear sesión de clase
             </h1>

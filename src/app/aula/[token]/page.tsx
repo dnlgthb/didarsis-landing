@@ -85,6 +85,31 @@ export default function MonitorPage({
     return () => clearInterval(interval);
   }, [fetchData]);
 
+  // Libera a un estudiante que entró mal: lo quita de la sesión y, en modo
+  // lista, su nombre vuelve a quedar disponible para elegir.
+  const releaseStudent = useCallback(
+    async (studentId: string, name: string) => {
+      if (
+        !window.confirm(
+          `¿Liberar a ${name}? Se quitará de la sesión y, si la clase usa lista de nombres, su nombre volverá a quedar disponible.`,
+        )
+      ) {
+        return;
+      }
+      try {
+        const res = await fetch(`/api/aula/monitor/${token}`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ studentId }),
+        });
+        if (res.ok) fetchData();
+      } catch {
+        // Silencioso: el siguiente poll reflejará el estado real.
+      }
+    },
+    [token, fetchData],
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen bg-bg-warm flex items-center justify-center">
@@ -248,6 +273,9 @@ export default function MonitorPage({
                   <th className="px-4 py-3 font-medium text-ink-secondary text-right">
                     Última actividad
                   </th>
+                  <th className="px-4 py-3 font-medium text-ink-secondary text-right">
+                    Acción
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -354,6 +382,17 @@ export default function MonitorPage({
                       </td>
                       <td className="px-4 py-3 text-right text-xs text-ink-secondary">
                         {timeAgo(student.last_active_at, now)}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            releaseStudent(student.id, student.student_name)
+                          }
+                          className="rounded-lg border border-black/10 bg-white px-3 py-1.5 text-xs font-medium text-brand-cta hover:bg-brand-cta/5 transition-colors whitespace-nowrap"
+                        >
+                          Liberar
+                        </button>
                       </td>
                     </tr>
                   );
